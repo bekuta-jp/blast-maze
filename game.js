@@ -709,18 +709,10 @@ soundButton.addEventListener("click", () => {
   updateSoundButton();
 });
 
-historyButton.addEventListener("click", () => {
-  openModal(changelogDialog);
-});
-
 historyButton.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" && event.key !== " ") return;
   event.preventDefault();
   openModal(changelogDialog);
-});
-
-changelogClose.addEventListener("click", () => {
-  closeModal(changelogDialog);
 });
 
 changelogClose.addEventListener("keydown", (event) => {
@@ -733,18 +725,10 @@ changelogDialog.addEventListener("click", (event) => {
   if (event.target === changelogDialog) closeModal(changelogDialog);
 });
 
-helpButton.addEventListener("click", () => {
-  openModal(helpDialog);
-});
-
 helpButton.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" && event.key !== " ") return;
   event.preventDefault();
   openModal(helpDialog);
-});
-
-helpClose.addEventListener("click", () => {
-  closeModal(helpDialog);
 });
 
 helpClose.addEventListener("keydown", (event) => {
