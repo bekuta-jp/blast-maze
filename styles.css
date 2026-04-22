@@ -376,14 +376,30 @@ canvas {
   cursor: pointer;
 }
 
-.changelog-panel ol {
+.changelog-panel ol,
+.help-list {
   margin: 0;
   padding: 12px 18px 18px 38px;
   color: #d8e7dd;
 }
 
-.changelog-panel li {
+.changelog-panel li,
+.help-list li {
   padding: 8px 0;
+}
+
+.help-list {
+  padding-left: 24px;
+}
+
+.help-list strong {
+  display: block;
+  color: var(--accent);
+  margin-bottom: 3px;
+}
+
+.help-list span {
+  display: block;
 }
 
 .changelog-panel time {
@@ -427,14 +443,14 @@ canvas {
   }
 
   .history-button {
-    min-width: 44px;
+    min-width: 40px;
     height: 32px;
-    padding: 0 7px;
+    padding: 0 6px;
     font-size: 0.78rem;
   }
 
   .version {
-    min-width: 54px;
+    min-width: 48px;
     padding: 5px 8px;
     font-size: 0.86rem;
   }

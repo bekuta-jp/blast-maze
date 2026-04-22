@@ -4,8 +4,11 @@ const overlay = document.querySelector("#overlay");
 const startButton = document.querySelector("#startButton");
 const soundButton = document.querySelector("#soundButton");
 const historyButton = document.querySelector("#historyButton");
+const helpButton = document.querySelector("#helpButton");
 const changelogDialog = document.querySelector("#changelogDialog");
 const changelogClose = document.querySelector("#changelogClose");
+const helpDialog = document.querySelector("#helpDialog");
+const helpClose = document.querySelector("#helpClose");
 const hud = {
   stage: document.querySelector("#stage"),
   score: document.querySelector("#score"),
@@ -646,6 +649,14 @@ function registerServiceWorker() {
   });
 }
 
+function openModal(modal) {
+  modal.hidden = false;
+}
+
+function closeModal(modal) {
+  modal.hidden = true;
+}
+
 window.addEventListener("keydown", (event) => {
   const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
   if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " ", "Enter"].includes(event.key)) {
@@ -690,19 +701,33 @@ soundButton.addEventListener("click", () => {
 });
 
 historyButton.addEventListener("click", () => {
-  changelogDialog.hidden = false;
+  openModal(changelogDialog);
 });
 
 changelogClose.addEventListener("click", () => {
-  changelogDialog.hidden = true;
+  closeModal(changelogDialog);
 });
 
 changelogDialog.addEventListener("click", (event) => {
-  if (event.target === changelogDialog) changelogDialog.hidden = true;
+  if (event.target === changelogDialog) closeModal(changelogDialog);
+});
+
+helpButton.addEventListener("click", () => {
+  openModal(helpDialog);
+});
+
+helpClose.addEventListener("click", () => {
+  closeModal(helpDialog);
+});
+
+helpDialog.addEventListener("click", (event) => {
+  if (event.target === helpDialog) closeModal(helpDialog);
 });
 
 window.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !changelogDialog.hidden) changelogDialog.hidden = true;
+  if (event.key !== "Escape") return;
+  closeModal(changelogDialog);
+  closeModal(helpDialog);
 });
 
 startButton.addEventListener("click", startGame);

@@ -15,8 +15,9 @@
         <h1>Blast Maze</h1>
         <div class="title-actions">
           <button id="historyButton" class="history-button" type="button">履歴</button>
+          <button id="helpButton" class="history-button" type="button">操作</button>
           <button id="soundButton" class="sound-toggle" type="button" aria-label="Sound on">♪</button>
-          <span class="version">v1.4</span>
+          <span class="version">v1.5</span>
         </div>
       </header>
 
@@ -67,6 +68,10 @@
           <ol>
             <li>
               <time datetime="2026-04-22">2026-04-22</time>
+              <span>v1.5: 画面上部に操作説明ボタンを追加。</span>
+            </li>
+            <li>
+              <time datetime="2026-04-22">2026-04-22</time>
               <span>v1.4: 履歴ポップアップの安定化、スマホ操作ボタンの再設計、1画面表示を調整。</span>
             </li>
             <li>
@@ -94,6 +99,21 @@
               <span>v1.0: 初回リリース。移動、爆弾、敵、出口、パワーアップ、ステージ進行を追加。</span>
             </li>
           </ol>
+        </div>
+      </section>
+
+      <section id="helpDialog" class="changelog-modal" aria-labelledby="helpTitle" aria-modal="true" role="dialog" hidden>
+        <div class="changelog-panel">
+          <div class="dialog-header">
+            <h2 id="helpTitle">操作説明</h2>
+            <button id="helpClose" class="dialog-close" type="button" aria-label="Close">×</button>
+          </div>
+          <ul class="help-list">
+            <li><strong>移動</strong><span>キーボードは矢印キーまたはWASD。スマホは左下のD-pad。</span></li>
+            <li><strong>爆弾</strong><span>Space/Enter、またはスマホ右下の丸ボタン。</span></li>
+            <li><strong>目的</strong><span>敵を全て倒し、ブロックに隠れた出口へ入ると次のステージ。</span></li>
+            <li><strong>強化</strong><span>黄色いパワーアップを取ると爆風と同時設置数が増えます。</span></li>
+          </ul>
         </div>
       </section>
     </main>
