@@ -156,6 +156,7 @@ function gameLoop(now) {
 function update(delta) {
   const player = state.player;
   player.invincible = Math.max(0, player.invincible - delta);
+  updateBombPassage();
   movePlayer(delta);
   updateBombs(delta);
   updateBlasts(delta);
@@ -239,7 +240,21 @@ function placeBomb() {
   const tile = tileOf(state.player);
   const occupied = state.bombs.some((bomb) => bomb.x === tile.x && bomb.y === tile.y);
   if (occupied || state.bombs.length >= state.player.bombs) return;
-  state.bombs.push({ x: tile.x, y: tile.y, timer: 2.15, power: state.player.power, exploded: false });
+  state.bombs.push({
+    x: tile.x,
+    y: tile.y,
+    timer: 2.15,
+    power: state.player.power,
+    exploded: false,
+    passableForPlayer: true,
+  });
+}
+
+function updateBombPassage() {
+  for (const bomb of state.bombs) {
+    if (!bomb.passableForPlayer) continue;
+    if (!entityOverlapsTile(state.player, bomb.x, bomb.y)) bomb.passableForPlayer = false;
+  }
 }
 
 function explodeBomb(bomb) {
@@ -314,10 +329,21 @@ function collides(entity, blocksBombs) {
     if (!blocksBombs) return false;
     return state.bombs.some((bomb) => {
       if (bomb.x !== x || bomb.y !== y) return false;
-      const centerTile = tileOf(entity);
-      return centerTile.x !== bomb.x || centerTile.y !== bomb.y;
+      return entity !== state.player || !bomb.passableForPlayer;
     });
   });
+}
+
+function entityOverlapsTile(entity, tileX, tileY) {
+  const r = entity.radius || 20;
+  const left = tileX * TILE;
+  const top = tileY * TILE;
+  return (
+    entity.x + r > left &&
+    entity.x - r < left + TILE &&
+    entity.y + r > top &&
+    entity.y - r < top + TILE
+  );
 }
 
 function blockedAhead(entity, dx, dy) {
