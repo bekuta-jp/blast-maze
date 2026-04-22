@@ -159,13 +159,37 @@ canvas {
 
 .controls {
   display: none;
-  justify-items: center;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+}
+
+.dpad {
+  width: 170px;
+  display: grid;
+  grid-template-columns: repeat(3, 54px);
+  grid-template-rows: repeat(3, 46px);
   gap: 6px;
 }
 
-.control-row {
-  display: flex;
-  gap: 6px;
+.dpad .up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.dpad .left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.dpad .right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.dpad .down {
+  grid-column: 2;
+  grid-row: 3;
 }
 
 .control {
@@ -179,7 +203,10 @@ canvas {
 }
 
 .control.bomb {
+  width: 74px;
+  height: 74px;
   color: var(--accent);
+  font-size: 1.6rem;
 }
 
 .control:active {
@@ -228,10 +255,10 @@ canvas {
   }
 
   .controls {
-    display: grid;
+    display: flex;
   }
 
   canvas {
-    width: min(100%, calc((100vh - 246px) * 1.1818));
+    width: min(100%, calc((100vh - 328px) * 1.1818));
   }
 }
