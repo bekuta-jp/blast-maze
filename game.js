@@ -3,6 +3,9 @@ const ctx = canvas.getContext("2d");
 const overlay = document.querySelector("#overlay");
 const startButton = document.querySelector("#startButton");
 const soundButton = document.querySelector("#soundButton");
+const historyButton = document.querySelector("#historyButton");
+const changelogDialog = document.querySelector("#changelogDialog");
+const changelogClose = document.querySelector("#changelogClose");
 const hud = {
   stage: document.querySelector("#stage"),
   score: document.querySelector("#score"),
@@ -684,6 +687,19 @@ soundButton.addEventListener("click", () => {
     playSound("power");
   }
   updateSoundButton();
+});
+
+historyButton.addEventListener("click", () => {
+  if (typeof changelogDialog.showModal === "function") changelogDialog.showModal();
+  else changelogDialog.setAttribute("open", "");
+});
+
+changelogClose.addEventListener("click", () => {
+  changelogDialog.close();
+});
+
+changelogDialog.addEventListener("click", (event) => {
+  if (event.target === changelogDialog) changelogDialog.close();
 });
 
 startButton.addEventListener("click", startGame);

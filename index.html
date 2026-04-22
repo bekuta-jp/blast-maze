@@ -14,8 +14,9 @@
       <header class="game-title">
         <h1>Blast Maze</h1>
         <div class="title-actions">
+          <button id="historyButton" class="history-button" type="button">履歴</button>
           <button id="soundButton" class="sound-toggle" type="button" aria-label="Sound on">♪</button>
-          <span class="version">v1.2</span>
+          <span class="version">v1.3</span>
         </div>
       </header>
 
@@ -49,17 +50,24 @@
 
       <section class="controls" aria-label="Controls">
         <div class="dpad" aria-label="Movement controls">
-          <button class="control up" data-key="ArrowUp" aria-label="Up">↑</button>
-          <button class="control left" data-key="ArrowLeft" aria-label="Left">←</button>
-          <button class="control right" data-key="ArrowRight" aria-label="Right">→</button>
-          <button class="control down" data-key="ArrowDown" aria-label="Down">↓</button>
+          <button class="control up" data-key="ArrowUp" aria-label="Up"></button>
+          <button class="control left" data-key="ArrowLeft" aria-label="Left"></button>
+          <button class="control right" data-key="ArrowRight" aria-label="Right"></button>
+          <button class="control down" data-key="ArrowDown" aria-label="Down"></button>
         </div>
-        <button class="control bomb" data-key=" " aria-label="Bomb">●</button>
+        <button class="control bomb" data-key=" " aria-label="Bomb"></button>
       </section>
 
-      <details class="changelog">
-        <summary>更新履歴</summary>
+      <dialog id="changelogDialog" class="changelog-dialog" aria-labelledby="changelogTitle">
+        <div class="dialog-header">
+          <h2 id="changelogTitle">更新履歴</h2>
+          <button id="changelogClose" class="dialog-close" type="button" aria-label="Close">×</button>
+        </div>
         <ol>
+          <li>
+            <time datetime="2026-04-22">2026-04-22</time>
+            <span>v1.3: スマホ操作ボタンの文字選択対策と、更新履歴のポップアップ化。</span>
+          </li>
           <li>
             <time datetime="2026-04-22">2026-04-22</time>
             <span>v1.2: 効果音とChromeでインストールできるWebアプリ設定を追加。</span>
@@ -81,7 +89,7 @@
             <span>v1.0: 初回リリース。移動、爆弾、敵、出口、パワーアップ、ステージ進行を追加。</span>
           </li>
         </ol>
-      </details>
+      </dialog>
     </main>
 
     <script src="game.js"></script>
