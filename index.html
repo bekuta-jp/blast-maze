@@ -7,7 +7,7 @@
     <title>Blast Maze</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
-    <link rel="stylesheet" href="styles.css?v=1.5.4">
+    <link rel="stylesheet" href="styles.css?v=1.5.5">
   </head>
   <body>
     <main class="game-shell">
@@ -20,7 +20,7 @@
           <label id="historyButton" class="history-button" for="historyToggle" role="button" tabindex="0">履歴</label>
           <label id="helpButton" class="history-button" for="helpToggle" role="button" tabindex="0">操作</label>
           <button id="soundButton" class="sound-toggle" type="button" aria-label="Sound on">♪</button>
-          <span class="version">v1.5.4</span>
+          <span class="version">v1.5.5</span>
         </div>
       </header>
 
@@ -69,6 +69,10 @@
             <label id="changelogClose" class="dialog-close" for="historyToggle" role="button" tabindex="0" aria-label="Close">×</label>
           </div>
           <ol>
+            <li>
+              <time datetime="2026-04-22">2026-04-22</time>
+              <span>v1.5.5: ポップアップを閉じられない問題を修正。</span>
+            </li>
             <li>
               <time datetime="2026-04-22">2026-04-22</time>
               <span>v1.5.4: Web版でモーダルが開かない問題に対するJS補助とキャッシュ対策を追加。</span>
@@ -137,6 +141,6 @@
       </section>
     </main>
 
-    <script src="game.js?v=1.5.4"></script>
+    <script src="game.js?v=1.5.5"></script>
   </body>
 </html>

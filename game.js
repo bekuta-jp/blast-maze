@@ -728,6 +728,11 @@ changelogClose.addEventListener("keydown", (event) => {
   closeModal(changelogDialog);
 });
 
+changelogClose.addEventListener("click", (event) => {
+  event.preventDefault();
+  closeModal(changelogDialog);
+});
+
 changelogDialog.addEventListener("click", (event) => {
   if (event.target === changelogDialog) closeModal(changelogDialog);
 });
@@ -745,6 +750,11 @@ helpButton.addEventListener("click", (event) => {
 
 helpClose.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
+  closeModal(helpDialog);
+});
+
+helpClose.addEventListener("click", (event) => {
   event.preventDefault();
   closeModal(helpDialog);
 });
