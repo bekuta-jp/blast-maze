@@ -1,4 +1,4 @@
-const CACHE_NAME = "blast-maze-v1.5";
+const CACHE_NAME = "blast-maze-v1.5.1";
 const APP_ASSETS = [
   "./",
   "./index.html",

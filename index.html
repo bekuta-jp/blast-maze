@@ -14,10 +14,10 @@
       <header class="game-title">
         <h1>Blast Maze</h1>
         <div class="title-actions">
-          <button id="historyButton" class="history-button" type="button">履歴</button>
-          <button id="helpButton" class="history-button" type="button">操作</button>
+          <a id="historyButton" class="history-button" href="#changelogDialog">履歴</a>
+          <a id="helpButton" class="history-button" href="#helpDialog">操作</a>
           <button id="soundButton" class="sound-toggle" type="button" aria-label="Sound on">♪</button>
-          <span class="version">v1.5</span>
+          <span class="version">v1.5.1</span>
         </div>
       </header>
 
@@ -59,13 +59,17 @@
         <button class="control bomb" data-key=" " aria-label="Bomb"></button>
       </section>
 
-      <section id="changelogDialog" class="changelog-modal" aria-labelledby="changelogTitle" aria-modal="true" role="dialog" hidden>
+      <section id="changelogDialog" class="changelog-modal" aria-labelledby="changelogTitle" aria-modal="true" role="dialog">
         <div class="changelog-panel">
           <div class="dialog-header">
             <h2 id="changelogTitle">更新履歴</h2>
-            <button id="changelogClose" class="dialog-close" type="button" aria-label="Close">×</button>
+            <a id="changelogClose" class="dialog-close" href="#" aria-label="Close">×</a>
           </div>
           <ol>
+            <li>
+              <time datetime="2026-04-22">2026-04-22</time>
+              <span>v1.5.1: 操作説明と履歴をCSSだけでも開ける方式に変更。</span>
+            </li>
             <li>
               <time datetime="2026-04-22">2026-04-22</time>
               <span>v1.5: 画面上部に操作説明ボタンを追加。</span>
@@ -102,11 +106,11 @@
         </div>
       </section>
 
-      <section id="helpDialog" class="changelog-modal" aria-labelledby="helpTitle" aria-modal="true" role="dialog" hidden>
+      <section id="helpDialog" class="changelog-modal" aria-labelledby="helpTitle" aria-modal="true" role="dialog">
         <div class="changelog-panel">
           <div class="dialog-header">
             <h2 id="helpTitle">操作説明</h2>
-            <button id="helpClose" class="dialog-close" type="button" aria-label="Close">×</button>
+            <a id="helpClose" class="dialog-close" href="#" aria-label="Close">×</a>
           </div>
           <ul class="help-list">
             <li><strong>移動</strong><span>キーボードは矢印キーまたはWASD。スマホは左下のD-pad。</span></li>
