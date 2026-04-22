@@ -8,6 +8,11 @@
   </head>
   <body>
     <main class="game-shell">
+      <header class="game-title">
+        <h1>Bomber Grid</h1>
+        <span class="version">v1.0</span>
+      </header>
+
       <section class="hud" aria-label="Game status">
         <div>
           <span class="label">STAGE</span>
@@ -45,6 +50,16 @@
         </div>
         <button class="control" data-key="ArrowDown" aria-label="Down">↓</button>
       </section>
+
+      <details class="changelog">
+        <summary>更新履歴</summary>
+        <ol>
+          <li>
+            <time datetime="2026-04-22">2026-04-22</time>
+            <span>v1.0: 初回リリース。移動、爆弾、敵、出口、パワーアップ、ステージ進行を追加。</span>
+          </li>
+        </ol>
+      </details>
     </main>
 
     <script src="game.js"></script>

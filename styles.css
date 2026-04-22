@@ -38,8 +38,34 @@ button {
   margin: 0 auto;
   padding: 18px;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
   gap: 14px;
+}
+
+.game-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.game-title h1 {
+  margin: 0;
+  color: var(--accent);
+  font-size: clamp(1.6rem, 5vw, 2.5rem);
+  line-height: 1;
+}
+
+.version {
+  flex: 0 0 auto;
+  min-width: 58px;
+  padding: 6px 10px;
+  border: 1px solid #44685b;
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--text);
+  font-weight: 800;
+  text-align: center;
 }
 
 .hud {
@@ -158,6 +184,37 @@ canvas {
 
 .control:active {
   transform: translateY(1px);
+}
+
+.changelog {
+  border: 1px solid #2e463d;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--panel) 86%, black);
+}
+
+.changelog summary {
+  min-height: 42px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.changelog ol {
+  margin: 0;
+  padding: 0 14px 14px 34px;
+  color: #d8e7dd;
+}
+
+.changelog li {
+  padding-top: 8px;
+}
+
+.changelog time {
+  display: inline-block;
+  margin-right: 8px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 720px) {

@@ -2,6 +2,8 @@
 
 ブラウザだけで遊べる、ボンバーマン風の Canvas ゲームです。
 
+現在のバージョン: `v1.0`
+
 ## 遊び方
 
 - 矢印キーまたは WASD: 移動
@@ -28,3 +30,16 @@ python3 -m http.server 8080
 1. GitHub のリポジトリ設定で Pages の Source を `GitHub Actions` にします
 2. `main` ブランチへ push します
 3. Actions の `Deploy to GitHub Pages` が完了すると公開 URL が表示されます
+
+## 更新履歴
+
+<details>
+<summary>開く</summary>
+
+### v1.0 - 2026-04-22
+
+- 初回リリース
+- 移動、爆弾、敵、出口、パワーアップ、ステージ進行を追加
+- GitHub Pages デプロイに対応
+
+</details>
