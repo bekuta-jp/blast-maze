@@ -10,6 +10,7 @@ const hud = {
 };
 
 const TILE = 64;
+const MOVE_STEP = TILE / 8;
 const COLS = 13;
 const ROWS = 11;
 const MAP = {
@@ -85,6 +86,8 @@ function makeState(stage = 1, score = 0, lives = 3) {
       y: TILE + TILE / 2,
       speed: 150,
       radius: 22,
+      moveCarryX: 0,
+      moveCarryY: 0,
       bombs: 1,
       power: 2,
       invincible: 1.4,
@@ -176,7 +179,21 @@ function movePlayer(delta) {
     dx *= Math.SQRT1_2;
     dy *= Math.SQRT1_2;
   }
-  moveEntity(p, dx * p.speed * delta, dy * p.speed * delta, true);
+  if (!dx) p.moveCarryX = 0;
+  if (!dy) p.moveCarryY = 0;
+  p.moveCarryX += dx * p.speed * delta;
+  p.moveCarryY += dy * p.speed * delta;
+  moveStepped(p, "x", "moveCarryX");
+  moveStepped(p, "y", "moveCarryY");
+}
+
+function moveStepped(entity, axis, carryKey) {
+  while (Math.abs(entity[carryKey]) >= MOVE_STEP) {
+    const step = Math.sign(entity[carryKey]) * MOVE_STEP;
+    if (axis === "x") moveEntity(entity, step, 0, true);
+    else moveEntity(entity, 0, step, true);
+    entity[carryKey] -= step;
+  }
 }
 
 function updateBombs(delta) {
