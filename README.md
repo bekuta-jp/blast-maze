@@ -2,6 +2,8 @@
 
 ブラウザだけで遊べる、ボンバーマン風の Canvas ゲームです。
 
+[プレイはこちら](https://bekuta-jp.github.io/blast-maze/)
+
 現在のバージョン: `v1.6.1`
 
 ## 遊び方
