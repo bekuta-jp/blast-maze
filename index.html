@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bomber Grid</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="game-shell">
+      <section class="hud" aria-label="Game status">
+        <div>
+          <span class="label">STAGE</span>
+          <strong id="stage">1</strong>
+        </div>
+        <div>
+          <span class="label">SCORE</span>
+          <strong id="score">0</strong>
+        </div>
+        <div>
+          <span class="label">TIME</span>
+          <strong id="time">180</strong>
+        </div>
+        <div>
+          <span class="label">LIFE</span>
+          <strong id="lives">3</strong>
+        </div>
+      </section>
+
+      <section class="board-wrap" aria-label="Bomber Grid game">
+        <canvas id="game" width="832" height="704"></canvas>
+        <div id="overlay" class="overlay">
+          <h1>Bomber Grid</h1>
+          <p>矢印/WASDで移動、Space/Enterで爆弾。出口を探して全ての敵を倒そう。</p>
+          <button id="startButton" type="button">Start</button>
+        </div>
+      </section>
+
+      <section class="controls" aria-label="Controls">
+        <button class="control" data-key="ArrowUp" aria-label="Up">↑</button>
+        <div class="control-row">
+          <button class="control" data-key="ArrowLeft" aria-label="Left">←</button>
+          <button class="control bomb" data-key=" " aria-label="Bomb">●</button>
+          <button class="control" data-key="ArrowRight" aria-label="Right">→</button>
+        </div>
+        <button class="control" data-key="ArrowDown" aria-label="Down">↓</button>
+      </section>
+    </main>
+
+    <script src="game.js"></script>
+  </body>
+</html>
