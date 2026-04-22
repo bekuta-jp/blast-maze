@@ -26,6 +26,7 @@ body {
     repeating-linear-gradient(45deg, #18231f 0 8px, #14201c 8px 16px);
   color: var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  overscroll-behavior: none;
 }
 
 button {
@@ -204,31 +205,18 @@ canvas {
 }
 
 .dpad {
-  width: 170px;
-  display: grid;
-  grid-template-columns: repeat(3, 54px);
-  grid-template-rows: repeat(3, 46px);
-  gap: 6px;
-}
-
-.dpad .up {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.dpad .left {
-  grid-column: 1;
-  grid-row: 2;
-}
-
-.dpad .right {
-  grid-column: 3;
-  grid-row: 2;
-}
-
-.dpad .down {
-  grid-column: 2;
-  grid-row: 3;
+  position: relative;
+  width: 156px;
+  height: 156px;
+  flex: 0 0 auto;
+  border: 1px solid #44685b;
+  border-radius: 8px;
+  background:
+    linear-gradient(45deg, transparent calc(50% - 1px), #44685b calc(50% - 1px), #44685b calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(-45deg, transparent calc(50% - 1px), #44685b calc(50% - 1px), #44685b calc(50% + 1px), transparent calc(50% + 1px)),
+    var(--panel-2);
+  overflow: hidden;
+  touch-action: none;
 }
 
 .control {
@@ -243,41 +231,86 @@ canvas {
   touch-action: none;
 }
 
-.control::before {
+.dpad-button {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.dpad-button.up {
+  clip-path: polygon(0 0, 100% 0, 50% 50%);
+}
+
+.dpad-button.right {
+  clip-path: polygon(100% 0, 100% 100%, 50% 50%);
+}
+
+.dpad-button.down {
+  clip-path: polygon(100% 100%, 0 100%, 50% 50%);
+}
+
+.dpad-button.left {
+  clip-path: polygon(0 100%, 0 0, 50% 50%);
+}
+
+.control::after {
   content: "";
   position: absolute;
   inset: 50% auto auto 50%;
-  width: 14px;
-  height: 14px;
-  border-top: 4px solid currentColor;
-  border-left: 4px solid currentColor;
-  transform-origin: center;
+  width: 0;
+  height: 0;
+  transform: translate(-50%, -50%);
 }
 
-.control.up::before {
-  transform: translate(-50%, -30%) rotate(45deg);
+.control.up::after {
+  inset: 25% auto auto 50%;
+  border-right: 11px solid transparent;
+  border-bottom: 17px solid currentColor;
+  border-left: 11px solid transparent;
+  transform: translate(-50%, -50%);
 }
 
-.control.left::before {
-  transform: translate(-30%, -50%) rotate(-45deg);
+.control.left::after {
+  inset: 50% auto auto 25%;
+  border-top: 11px solid transparent;
+  border-right: 17px solid currentColor;
+  border-bottom: 11px solid transparent;
+  transform: translate(-50%, -50%);
 }
 
-.control.right::before {
-  transform: translate(-70%, -50%) rotate(135deg);
+.control.right::after {
+  inset: 50% auto auto 75%;
+  border-top: 11px solid transparent;
+  border-bottom: 11px solid transparent;
+  border-left: 17px solid currentColor;
+  transform: translate(-50%, -50%);
 }
 
-.control.down::before {
-  transform: translate(-50%, -70%) rotate(225deg);
+.control.down::after {
+  inset: 75% auto auto 50%;
+  border-top: 17px solid currentColor;
+  border-right: 11px solid transparent;
+  border-left: 11px solid transparent;
+  transform: translate(-50%, -50%);
+}
+
+.dpad-button:active,
+.dpad-button.active {
+  background: rgba(242, 193, 78, 0.14);
 }
 
 .control.bomb {
-  width: 74px;
-  height: 74px;
+  width: 86px;
+  height: 86px;
   color: var(--accent);
   font-size: 1.6rem;
 }
 
-.control.bomb::before {
+.control.bomb::after {
   width: 24px;
   height: 24px;
   border: 0;
@@ -291,7 +324,21 @@ canvas {
   transform: translateY(1px);
 }
 
-.changelog-dialog {
+.changelog-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(4, 8, 7, 0.7);
+}
+
+.changelog-modal[hidden] {
+  display: none;
+}
+
+.changelog-panel {
   width: min(92vw, 520px);
   max-height: min(78vh, 620px);
   padding: 0;
@@ -300,10 +347,7 @@ canvas {
   background: color-mix(in srgb, var(--panel) 86%, black);
   color: var(--text);
   box-shadow: 0 22px 60px rgba(0, 0, 0, 0.48);
-}
-
-.changelog-dialog::backdrop {
-  background: rgba(4, 8, 7, 0.7);
+  overflow: auto;
 }
 
 .dialog-header {
@@ -332,17 +376,17 @@ canvas {
   cursor: pointer;
 }
 
-.changelog-dialog ol {
+.changelog-panel ol {
   margin: 0;
   padding: 12px 18px 18px 38px;
   color: #d8e7dd;
 }
 
-.changelog-dialog li {
+.changelog-panel li {
   padding: 8px 0;
 }
 
-.changelog-dialog time {
+.changelog-panel time {
   display: inline-block;
   margin-right: 8px;
   color: var(--muted);
@@ -350,29 +394,102 @@ canvas {
 }
 
 @media (max-width: 720px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
   .game-shell {
-    padding: 10px;
-    gap: 10px;
+    width: 100vw;
+    height: 100svh;
+    min-height: 100svh;
+    padding: 8px;
+    gap: 6px;
+    overflow: hidden;
+  }
+
+  .game-title {
+    gap: 8px;
+  }
+
+  .game-title h1 {
+    font-size: clamp(1.35rem, 7vw, 1.8rem);
+  }
+
+  .title-actions {
+    gap: 5px;
   }
 
   .sound-toggle {
-    width: 36px;
+    width: 34px;
+    height: 32px;
   }
 
   .history-button {
-    min-width: 48px;
-    padding: 0 8px;
+    min-width: 44px;
+    height: 32px;
+    padding: 0 7px;
+    font-size: 0.78rem;
+  }
+
+  .version {
+    min-width: 54px;
+    padding: 5px 8px;
+    font-size: 0.86rem;
   }
 
   .hud {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .hud > div {
+    padding: 6px 8px;
+  }
+
+  .hud strong {
+    margin-top: 3px;
+    font-size: 1.05rem;
+  }
+
+  .board-wrap {
+    align-self: stretch;
   }
 
   .controls {
     display: flex;
+    padding: 0 4px;
+  }
+
+  .dpad {
+    width: min(40vw, 150px);
+    height: min(40vw, 150px);
+  }
+
+  .control.bomb {
+    width: min(24vw, 88px);
+    height: min(24vw, 88px);
   }
 
   canvas {
-    width: min(100%, calc((100vh - 286px) * 1.1818));
+    width: min(100%, calc((100svh - 238px) * 1.1818));
+    max-height: 100%;
+  }
+}
+
+@media (max-width: 720px) and (max-height: 700px) {
+  .dpad {
+    width: min(35vw, 128px);
+    height: min(35vw, 128px);
+  }
+
+  .control.bomb {
+    width: min(22vw, 76px);
+    height: min(22vw, 76px);
+  }
+
+  canvas {
+    width: min(100%, calc((100svh - 212px) * 1.1818));
   }
 }

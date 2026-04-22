@@ -690,16 +690,19 @@ soundButton.addEventListener("click", () => {
 });
 
 historyButton.addEventListener("click", () => {
-  if (typeof changelogDialog.showModal === "function") changelogDialog.showModal();
-  else changelogDialog.setAttribute("open", "");
+  changelogDialog.hidden = false;
 });
 
 changelogClose.addEventListener("click", () => {
-  changelogDialog.close();
+  changelogDialog.hidden = true;
 });
 
 changelogDialog.addEventListener("click", (event) => {
-  if (event.target === changelogDialog) changelogDialog.close();
+  if (event.target === changelogDialog) changelogDialog.hidden = true;
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !changelogDialog.hidden) changelogDialog.hidden = true;
 });
 
 startButton.addEventListener("click", startGame);
