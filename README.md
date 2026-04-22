@@ -20,3 +20,11 @@ python3 -m http.server 8080
 ```
 
 その後 `http://localhost:8080` を開いてください。
+
+## GitHub Pages
+
+`.github/workflows/pages.yml` で GitHub Pages へデプロイできます。
+
+1. GitHub のリポジトリ設定で Pages の Source を `GitHub Actions` にします
+2. `main` ブランチへ push します
+3. Actions の `Deploy to GitHub Pages` が完了すると公開 URL が表示されます
