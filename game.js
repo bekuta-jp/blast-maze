@@ -135,7 +135,7 @@ function restartAfterHit() {
   const nextLives = state.lives - 1;
   if (nextLives <= 0) {
     playSound("gameover");
-    endGame("GAME OVER", "Startで再挑戦");
+    endGame("GAME OVER", "再挑戦でリスタート");
     return;
   }
   state = makeState(state.stage, state.score, nextLives);
@@ -148,7 +148,7 @@ function endGame(title, body) {
   state.status = "ended";
   overlay.querySelector("h1").textContent = title;
   overlay.querySelector("p").textContent = body;
-  startButton.textContent = "Restart";
+  startButton.textContent = "再挑戦";
   overlay.classList.remove("hidden");
 }
 
