@@ -36,13 +36,10 @@ button {
   user-select: none;
 }
 
-a {
-  color: inherit;
-}
-
 button:focus-visible,
 summary:focus-visible,
-a:focus-visible {
+a:focus-visible,
+label:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--accent) 72%, white);
   outline-offset: 2px;
 }
@@ -55,6 +52,14 @@ a:focus-visible {
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
   gap: 14px;
+}
+
+.modal-toggle {
+  position: fixed;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .game-title {
@@ -99,6 +104,7 @@ a:focus-visible {
   color: var(--text);
   font-size: 0.84rem;
   text-decoration: none;
+  user-select: none;
 }
 
 .sound-toggle.muted {
@@ -342,7 +348,8 @@ canvas {
   background: rgba(4, 8, 7, 0.7);
 }
 
-.changelog-modal:target {
+#historyToggle:checked ~ #changelogDialog,
+#helpToggle:checked ~ #helpDialog {
   display: grid;
 }
 
@@ -385,6 +392,7 @@ canvas {
   line-height: 1;
   cursor: pointer;
   text-decoration: none;
+  user-select: none;
 }
 
 .changelog-panel ol,

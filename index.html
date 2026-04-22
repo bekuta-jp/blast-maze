@@ -11,13 +11,16 @@
   </head>
   <body>
     <main class="game-shell">
+      <input id="historyToggle" class="modal-toggle" type="checkbox" aria-hidden="true">
+      <input id="helpToggle" class="modal-toggle" type="checkbox" aria-hidden="true">
+
       <header class="game-title">
         <h1>Blast Maze</h1>
         <div class="title-actions">
-          <a id="historyButton" class="history-button" href="#changelogDialog">履歴</a>
-          <a id="helpButton" class="history-button" href="#helpDialog">操作</a>
+          <label id="historyButton" class="history-button" for="historyToggle" role="button" tabindex="0">履歴</label>
+          <label id="helpButton" class="history-button" for="helpToggle" role="button" tabindex="0">操作</label>
           <button id="soundButton" class="sound-toggle" type="button" aria-label="Sound on">♪</button>
-          <span class="version">v1.5.1</span>
+          <span class="version">v1.5.2</span>
         </div>
       </header>
 
@@ -63,9 +66,13 @@
         <div class="changelog-panel">
           <div class="dialog-header">
             <h2 id="changelogTitle">更新履歴</h2>
-            <a id="changelogClose" class="dialog-close" href="#" aria-label="Close">×</a>
+            <label id="changelogClose" class="dialog-close" for="historyToggle" role="button" tabindex="0" aria-label="Close">×</label>
           </div>
           <ol>
+            <li>
+              <time datetime="2026-04-22">2026-04-22</time>
+              <span>v1.5.2: URLハッシュに依存しないポップアップ方式に変更。</span>
+            </li>
             <li>
               <time datetime="2026-04-22">2026-04-22</time>
               <span>v1.5.1: 操作説明と履歴をCSSだけでも開ける方式に変更。</span>
@@ -110,7 +117,7 @@
         <div class="changelog-panel">
           <div class="dialog-header">
             <h2 id="helpTitle">操作説明</h2>
-            <a id="helpClose" class="dialog-close" href="#" aria-label="Close">×</a>
+            <label id="helpClose" class="dialog-close" for="helpToggle" role="button" tabindex="0" aria-label="Close">×</label>
           </div>
           <ul class="help-list">
             <li><strong>移動</strong><span>キーボードは矢印キーまたはWASD。スマホは左下のD-pad。</span></li>

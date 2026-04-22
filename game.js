@@ -9,6 +9,8 @@ const changelogDialog = document.querySelector("#changelogDialog");
 const changelogClose = document.querySelector("#changelogClose");
 const helpDialog = document.querySelector("#helpDialog");
 const helpClose = document.querySelector("#helpClose");
+const historyToggle = document.querySelector("#historyToggle");
+const helpToggle = document.querySelector("#helpToggle");
 const hud = {
   stage: document.querySelector("#stage"),
   score: document.querySelector("#score"),
@@ -650,11 +652,18 @@ function registerServiceWorker() {
 }
 
 function openModal(modal) {
-  modal.hidden = false;
+  if (modal === changelogDialog) historyToggle.checked = true;
+  if (modal === helpDialog) helpToggle.checked = true;
 }
 
 function closeModal(modal) {
-  modal.hidden = true;
+  if (modal === changelogDialog) historyToggle.checked = false;
+  if (modal === helpDialog) helpToggle.checked = false;
+}
+
+function clearLegacyModalHash() {
+  if (!["#helpDialog", "#changelogDialog"].includes(window.location.hash)) return;
+  history.replaceState(null, "", window.location.pathname + window.location.search);
 }
 
 window.addEventListener("keydown", (event) => {
@@ -704,7 +713,19 @@ historyButton.addEventListener("click", () => {
   openModal(changelogDialog);
 });
 
+historyButton.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
+  openModal(changelogDialog);
+});
+
 changelogClose.addEventListener("click", () => {
+  closeModal(changelogDialog);
+});
+
+changelogClose.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
   closeModal(changelogDialog);
 });
 
@@ -716,7 +737,19 @@ helpButton.addEventListener("click", () => {
   openModal(helpDialog);
 });
 
+helpButton.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
+  openModal(helpDialog);
+});
+
 helpClose.addEventListener("click", () => {
+  closeModal(helpDialog);
+});
+
+helpClose.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
   closeModal(helpDialog);
 });
 
@@ -734,5 +767,6 @@ startButton.addEventListener("click", startGame);
 state = makeState();
 updateHud();
 updateSoundButton();
+clearLegacyModalHash();
 registerServiceWorker();
 requestAnimationFrame(gameLoop);
