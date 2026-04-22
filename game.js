@@ -654,11 +654,13 @@ function registerServiceWorker() {
 function openModal(modal) {
   if (modal === changelogDialog) historyToggle.checked = true;
   if (modal === helpDialog) helpToggle.checked = true;
+  modal.classList.add("open");
 }
 
 function closeModal(modal) {
   if (modal === changelogDialog) historyToggle.checked = false;
   if (modal === helpDialog) helpToggle.checked = false;
+  modal.classList.remove("open");
 }
 
 function clearLegacyModalHash() {
@@ -715,6 +717,11 @@ historyButton.addEventListener("keydown", (event) => {
   openModal(changelogDialog);
 });
 
+historyButton.addEventListener("click", (event) => {
+  event.preventDefault();
+  openModal(changelogDialog);
+});
+
 changelogClose.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" && event.key !== " ") return;
   event.preventDefault();
@@ -727,6 +734,11 @@ changelogDialog.addEventListener("click", (event) => {
 
 helpButton.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
+  openModal(helpDialog);
+});
+
+helpButton.addEventListener("click", (event) => {
   event.preventDefault();
   openModal(helpDialog);
 });

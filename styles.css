@@ -349,7 +349,8 @@ canvas {
 }
 
 #historyToggle:checked ~ #changelogDialog,
-#helpToggle:checked ~ #helpDialog {
+#helpToggle:checked ~ #helpDialog,
+.changelog-modal.open {
   display: grid;
 }
 
