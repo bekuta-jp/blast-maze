@@ -99,6 +99,7 @@ function makeState(stage = 1, score = 0, lives = 3) {
       radius: 22,
       moveCarryX: 0,
       moveCarryY: 0,
+      nextWallSoundAt: 0,
       bombs: 1,
       power: 2,
       invincible: 1.4,
@@ -205,8 +206,8 @@ function movePlayer(delta) {
 function moveStepped(entity, axis, carryKey) {
   while (Math.abs(entity[carryKey]) >= MOVE_STEP) {
     const step = Math.sign(entity[carryKey]) * MOVE_STEP;
-    if (axis === "x") moveEntity(entity, step, 0, true);
-    else moveEntity(entity, 0, step, true);
+    const blocked = axis === "x" ? moveEntity(entity, step, 0, true) : moveEntity(entity, 0, step, true);
+    if (blocked && entity === state.player) playWallSound();
     entity[carryKey] -= step;
   }
 }
@@ -343,14 +344,22 @@ function damagePlayer() {
 }
 
 function moveEntity(entity, dx, dy, blocksBombs) {
+  let blocked = false;
   if (dx) {
     entity.x += dx;
-    if (collides(entity, blocksBombs)) entity.x -= dx;
+    if (collides(entity, blocksBombs)) {
+      entity.x -= dx;
+      blocked = true;
+    }
   }
   if (dy) {
     entity.y += dy;
-    if (collides(entity, blocksBombs)) entity.y -= dy;
+    if (collides(entity, blocksBombs)) {
+      entity.y -= dy;
+      blocked = true;
+    }
   }
+  return blocked;
 }
 
 function collides(entity, blocksBombs) {
@@ -598,6 +607,10 @@ function playSound(name) {
       [55, 0.04, 0.22, "triangle", 0.07],
     ],
     crate: [[240, 0, 0.08, "square", 0.035]],
+    wall: [
+      [130, 0, 0.045, "square", 0.035],
+      [95, 0.035, 0.055, "triangle", 0.025],
+    ],
     enemy: [
       [620, 0, 0.06, "square", 0.035],
       [780, 0.06, 0.07, "square", 0.03],
@@ -636,6 +649,13 @@ function playSound(name) {
     oscillator.start(now + delay);
     oscillator.stop(now + delay + duration + 0.02);
   }
+}
+
+function playWallSound() {
+  const now = performance.now();
+  if (now < state.player.nextWallSoundAt) return;
+  state.player.nextWallSoundAt = now + 180;
+  playSound("wall");
 }
 
 function updateSoundButton() {
