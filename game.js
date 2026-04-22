@@ -97,7 +97,7 @@ function makeState(stage = 1, score = 0, lives = 3) {
     blasts: [],
     enemies,
     status: "ready",
-    message: "Bomber Grid",
+    message: "Blast Maze",
   };
 }
 

@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bomber Grid</title>
+    <title>Blast Maze</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="game-shell">
       <header class="game-title">
-        <h1>Bomber Grid</h1>
-        <span class="version">v1.1.1</span>
+        <h1>Blast Maze</h1>
+        <span class="version">v1.1.2</span>
       </header>
 
       <section class="hud" aria-label="Game status">
@@ -32,10 +32,10 @@
         </div>
       </section>
 
-      <section class="board-wrap" aria-label="Bomber Grid game">
+      <section class="board-wrap" aria-label="Blast Maze game">
         <canvas id="game" width="832" height="704"></canvas>
         <div id="overlay" class="overlay">
-          <h1>Bomber Grid</h1>
+          <h1>Blast Maze</h1>
           <p>矢印/WASDで移動、Space/Enterで爆弾。出口を探して全ての敵を倒そう。</p>
           <button id="startButton" type="button">Start</button>
         </div>
@@ -54,6 +54,10 @@
       <details class="changelog">
         <summary>更新履歴</summary>
         <ol>
+          <li>
+            <time datetime="2026-04-22">2026-04-22</time>
+            <span>v1.1.2: タイトル表示をBlast Mazeに統一。</span>
+          </li>
           <li>
             <time datetime="2026-04-22">2026-04-22</time>
             <span>v1.1.1: プレイヤー移動を約1/8マスごとの段階移動に調整。</span>

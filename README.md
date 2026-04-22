@@ -1,8 +1,8 @@
-# Bomber Grid
+# Blast Maze
 
 ブラウザだけで遊べる、ボンバーマン風の Canvas ゲームです。
 
-現在のバージョン: `v1.1.1`
+現在のバージョン: `v1.1.2`
 
 ## 遊び方
 
@@ -35,6 +35,10 @@ python3 -m http.server 8080
 
 <details>
 <summary>開く</summary>
+
+### v1.1.2 - 2026-04-22
+
+- タイトル表示を Blast Maze に統一
 
 ### v1.1.1 - 2026-04-22
 
