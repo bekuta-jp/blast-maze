@@ -3,14 +3,20 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111816">
     <title>Blast Maze</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="game-shell">
       <header class="game-title">
         <h1>Blast Maze</h1>
-        <span class="version">v1.1.2</span>
+        <div class="title-actions">
+          <button id="soundButton" class="sound-toggle" type="button" aria-label="Sound on">♪</button>
+          <span class="version">v1.2</span>
+        </div>
       </header>
 
       <section class="hud" aria-label="Game status">
@@ -54,6 +60,10 @@
       <details class="changelog">
         <summary>更新履歴</summary>
         <ol>
+          <li>
+            <time datetime="2026-04-22">2026-04-22</time>
+            <span>v1.2: 効果音とChromeでインストールできるWebアプリ設定を追加。</span>
+          </li>
           <li>
             <time datetime="2026-04-22">2026-04-22</time>
             <span>v1.1.2: タイトル表示をBlast Mazeに統一。</span>

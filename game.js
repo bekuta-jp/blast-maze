@@ -2,6 +2,7 @@ const canvas = document.querySelector("#game");
 const ctx = canvas.getContext("2d");
 const overlay = document.querySelector("#overlay");
 const startButton = document.querySelector("#startButton");
+const soundButton = document.querySelector("#soundButton");
 const hud = {
   stage: document.querySelector("#stage"),
   score: document.querySelector("#score"),
@@ -26,6 +27,8 @@ const touchKeys = new Map();
 let state;
 let lastFrame = 0;
 let accumulator = 0;
+let audioContext;
+let soundEnabled = true;
 
 function makeState(stage = 1, score = 0, lives = 3) {
   const map = [];
@@ -102,6 +105,8 @@ function makeState(stage = 1, score = 0, lives = 3) {
 }
 
 function startGame() {
+  initAudio();
+  playSound("start");
   state = makeState();
   state.status = "playing";
   overlay.classList.add("hidden");
@@ -110,6 +115,7 @@ function startGame() {
 }
 
 function nextStage() {
+  playSound("stage");
   state = makeState(state.stage + 1, state.score + 1000, state.lives);
   state.status = "playing";
   overlay.classList.add("hidden");
@@ -119,6 +125,7 @@ function nextStage() {
 function restartAfterHit() {
   const nextLives = state.lives - 1;
   if (nextLives <= 0) {
+    playSound("gameover");
     endGame("GAME OVER", "Startで再挑戦");
     return;
   }
@@ -214,6 +221,7 @@ function updateBlasts(delta) {
       if (enemy.alive && tileOf(enemy).x === blast.x && tileOf(enemy).y === blast.y) {
         enemy.alive = false;
         state.score += 150;
+        playSound("enemy");
       }
     }
   }
@@ -248,6 +256,7 @@ function checkPickupsAndExit() {
     state.player.power += 1;
     state.player.bombs += 1;
     state.score += 250;
+    playSound("power");
   }
   if (value === MAP.exit && state.enemies.length === 0) nextStage();
 }
@@ -257,6 +266,8 @@ function placeBomb() {
   const tile = tileOf(state.player);
   const occupied = state.bombs.some((bomb) => bomb.x === tile.x && bomb.y === tile.y);
   if (occupied || state.bombs.length >= state.player.bombs) return;
+  initAudio();
+  playSound("bomb");
   state.bombs.push({
     x: tile.x,
     y: tile.y,
@@ -276,6 +287,7 @@ function updateBombPassage() {
 
 function explodeBomb(bomb) {
   bomb.exploded = true;
+  playSound("blast");
   const blasts = [{ x: bomb.x, y: bomb.y, timer: 0.42 }];
   const dirs = [
     [1, 0],
@@ -294,6 +306,7 @@ function explodeBomb(bomb) {
       if (isCrate(value)) {
         revealCrate(x, y, value);
         state.score += 50;
+        playSound("crate");
         break;
       }
     }
@@ -315,6 +328,7 @@ function revealCrate(x, y, value) {
 
 function damagePlayer() {
   if (state.status !== "playing" || state.player.invincible > 0) return;
+  playSound("hit");
   state.player.invincible = 1.5;
   state.status = "paused";
   setTimeout(restartAfterHit, 700);
@@ -551,6 +565,84 @@ function shuffle(items) {
   return items;
 }
 
+function initAudio() {
+  if (!soundEnabled) return;
+  const AudioCtor = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtor) return;
+  if (!audioContext) audioContext = new AudioCtor();
+  if (audioContext.state === "suspended") audioContext.resume();
+}
+
+function playSound(name) {
+  if (!soundEnabled) return;
+  initAudio();
+  if (!audioContext) return;
+
+  const now = audioContext.currentTime;
+  const sounds = {
+    start: [
+      [392, 0, 0.07, "square", 0.04],
+      [523, 0.08, 0.11, "square", 0.04],
+    ],
+    bomb: [[160, 0, 0.09, "triangle", 0.05]],
+    blast: [
+      [90, 0, 0.18, "sawtooth", 0.09],
+      [55, 0.04, 0.22, "triangle", 0.07],
+    ],
+    crate: [[240, 0, 0.08, "square", 0.035]],
+    enemy: [
+      [620, 0, 0.06, "square", 0.035],
+      [780, 0.06, 0.07, "square", 0.03],
+    ],
+    power: [
+      [520, 0, 0.06, "triangle", 0.04],
+      [700, 0.06, 0.08, "triangle", 0.04],
+      [920, 0.14, 0.11, "triangle", 0.035],
+    ],
+    stage: [
+      [330, 0, 0.09, "square", 0.04],
+      [440, 0.1, 0.09, "square", 0.04],
+      [660, 0.2, 0.14, "square", 0.04],
+    ],
+    hit: [
+      [180, 0, 0.1, "sawtooth", 0.07],
+      [120, 0.09, 0.15, "sawtooth", 0.05],
+    ],
+    gameover: [
+      [220, 0, 0.16, "triangle", 0.06],
+      [165, 0.16, 0.18, "triangle", 0.05],
+      [110, 0.34, 0.24, "triangle", 0.05],
+    ],
+  };
+
+  for (const [frequency, delay, duration, type, volume] of sounds[name] || []) {
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(frequency, now + delay);
+    gain.gain.setValueAtTime(0.0001, now + delay);
+    gain.gain.exponentialRampToValueAtTime(volume, now + delay + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + delay + duration);
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+    oscillator.start(now + delay);
+    oscillator.stop(now + delay + duration + 0.02);
+  }
+}
+
+function updateSoundButton() {
+  soundButton.textContent = soundEnabled ? "♪" : "×";
+  soundButton.classList.toggle("muted", !soundEnabled);
+  soundButton.setAttribute("aria-label", soundEnabled ? "Sound on" : "Sound off");
+}
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+
 window.addEventListener("keydown", (event) => {
   const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
   if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " ", "Enter"].includes(event.key)) {
@@ -585,7 +677,18 @@ document.querySelectorAll(".control").forEach((button) => {
   button.addEventListener("lostpointercapture", release);
 });
 
+soundButton.addEventListener("click", () => {
+  soundEnabled = !soundEnabled;
+  if (soundEnabled) {
+    initAudio();
+    playSound("power");
+  }
+  updateSoundButton();
+});
+
 startButton.addEventListener("click", startGame);
 state = makeState();
 updateHud();
+updateSoundButton();
+registerServiceWorker();
 requestAnimationFrame(gameLoop);
