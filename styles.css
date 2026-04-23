@@ -124,7 +124,7 @@ label:focus-visible {
 
 .hud {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -200,7 +200,8 @@ canvas {
   font-size: clamp(0.95rem, 3vw, 1.1rem);
 }
 
-#startButton {
+#startButton,
+#continueButton {
   min-width: 126px;
   min-height: 44px;
   border: 0;
@@ -209,6 +210,54 @@ canvas {
   color: #1d1708;
   font-weight: 800;
   cursor: pointer;
+}
+
+.overlay-actions {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.continue-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+#continueInput {
+  width: 140px;
+  min-height: 44px;
+  border: 1px solid #44685b;
+  border-radius: 8px;
+  background: #0f1714;
+  color: var(--text);
+  font: inherit;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 0 10px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+#continueButton {
+  min-width: 118px;
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid #44685b;
+}
+
+.password-line,
+.continue-hint {
+  min-height: 1.2em;
+  margin: 0;
+  color: #d8e7dd;
+  font-weight: 800;
+}
+
+.continue-hint {
+  color: var(--accent);
+  font-size: 0.9rem;
 }
 
 .controls {
@@ -476,7 +525,7 @@ canvas {
   }
 
   .hud {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 5px;
   }
 
@@ -509,7 +558,7 @@ canvas {
   }
 
   canvas {
-    width: min(100%, calc((100svh - 238px) * 1.1818));
+    width: min(100%, calc((100svh - 268px) * 1.1818));
     max-height: 100%;
   }
 }
@@ -526,6 +575,6 @@ canvas {
   }
 
   canvas {
-    width: min(100%, calc((100svh - 212px) * 1.1818));
+    width: min(100%, calc((100svh - 238px) * 1.1818));
   }
 }

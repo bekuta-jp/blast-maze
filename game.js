@@ -11,17 +11,24 @@ const helpDialog = document.querySelector("#helpDialog");
 const helpClose = document.querySelector("#helpClose");
 const historyToggle = document.querySelector("#historyToggle");
 const helpToggle = document.querySelector("#helpToggle");
+const continueInput = document.querySelector("#continueInput");
+const continueButton = document.querySelector("#continueButton");
+const continueHint = document.querySelector("#continueHint");
+const passwordLine = document.querySelector("#passwordLine");
 const hud = {
   stage: document.querySelector("#stage"),
   score: document.querySelector("#score"),
   time: document.querySelector("#time"),
   lives: document.querySelector("#lives"),
+  bombs: document.querySelector("#bombs"),
+  power: document.querySelector("#power"),
 };
 
 const TILE = 64;
 const MOVE_STEP = TILE / 8;
 const COLS = 13;
 const ROWS = 11;
+const MAX_CONTINUE_STAGE = 99;
 const MAP = {
   empty: 0,
   wall: 1,
@@ -118,6 +125,7 @@ function startGame() {
   playSound("start");
   state = makeState();
   state.status = "playing";
+  resetOverlay();
   overlay.classList.add("hidden");
   updateHud();
   lastFrame = performance.now();
@@ -134,22 +142,53 @@ function nextStage() {
 function restartAfterHit() {
   const nextLives = state.lives - 1;
   if (nextLives <= 0) {
+    state.lives = 0;
+    updateHud();
     playSound("gameover");
-    endGame("GAME OVER", "再挑戦でリスタート");
+    endGame("GAME OVER", "再挑戦でリスタート", true);
     return;
   }
-  state = makeState(state.stage, state.score, nextLives);
+  state.lives = nextLives;
+  respawnPlayer();
   state.status = "playing";
   overlay.classList.add("hidden");
   updateHud();
 }
 
-function endGame(title, body) {
+function endGame(title, body, showPassword = false) {
   state.status = "ended";
   overlay.querySelector("h1").textContent = title;
   overlay.querySelector("p").textContent = body;
   startButton.textContent = "再挑戦";
+  if (showPassword) {
+    const password = passwordForStage(state.stage);
+    passwordLine.hidden = false;
+    passwordLine.textContent = `PASSWORD: ${password}`;
+    continueInput.value = password;
+    continueHint.textContent = "";
+  }
   overlay.classList.remove("hidden");
+}
+
+function resetOverlay() {
+  overlay.querySelector("h1").textContent = "Blast Maze";
+  overlay.querySelector("p").textContent = "矢印/WASDで移動、Space/Enterで爆弾。出口を探して全ての敵を倒そう。";
+  startButton.textContent = "Start";
+  passwordLine.hidden = true;
+  passwordLine.textContent = "";
+  continueInput.value = "";
+  continueHint.textContent = "";
+}
+
+function respawnPlayer() {
+  state.player.x = TILE + TILE / 2;
+  state.player.y = TILE + TILE / 2;
+  state.player.moveCarryX = 0;
+  state.player.moveCarryY = 0;
+  state.player.nextWallSoundAt = 0;
+  state.player.invincible = 1.4;
+  state.bombs = [];
+  state.blasts = [];
 }
 
 function gameLoop(now) {
@@ -543,6 +582,8 @@ function updateHud() {
   hud.score.textContent = state.score;
   hud.time.textContent = Math.max(0, state.time);
   hud.lives.textContent = state.lives;
+  hud.bombs.textContent = state.player.bombs;
+  hud.power.textContent = state.player.power;
 }
 
 function tileOf(entity) {
@@ -662,6 +703,43 @@ function updateSoundButton() {
   soundButton.textContent = soundEnabled ? "♪" : "×";
   soundButton.classList.toggle("muted", !soundEnabled);
   soundButton.setAttribute("aria-label", soundEnabled ? "Sound on" : "Sound off");
+}
+
+function passwordForStage(stage) {
+  let hash = 0x811c9dc5;
+  const input = `blast-maze:${stage}`;
+  for (let i = 0; i < input.length; i += 1) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return (hash >>> 0).toString(36).toUpperCase().slice(-5).padStart(5, "0");
+}
+
+function stageFromPassword(password) {
+  const normalized = password.trim().toUpperCase();
+  if (!normalized) return null;
+  for (let stage = 1; stage <= MAX_CONTINUE_STAGE; stage += 1) {
+    if (passwordForStage(stage) === normalized) return stage;
+  }
+  return null;
+}
+
+function continueFromPassword() {
+  initAudio();
+  const stage = stageFromPassword(continueInput.value);
+  if (!stage) {
+    continueHint.textContent = "PASSWORD ERROR";
+    playSound("hit");
+    return;
+  }
+  playSound("stage");
+  state = makeState(stage, 0, 3);
+  state.status = "playing";
+  continueHint.textContent = "";
+  passwordLine.hidden = true;
+  overlay.classList.add("hidden");
+  updateHud();
+  lastFrame = performance.now();
 }
 
 function registerServiceWorker() {
@@ -790,6 +868,15 @@ window.addEventListener("keydown", (event) => {
 });
 
 startButton.addEventListener("click", startGame);
+continueButton.addEventListener("click", continueFromPassword);
+continueInput.addEventListener("input", () => {
+  continueInput.value = continueInput.value.toUpperCase();
+});
+continueInput.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter") return;
+  event.preventDefault();
+  continueFromPassword();
+});
 state = makeState();
 updateHud();
 updateSoundButton();

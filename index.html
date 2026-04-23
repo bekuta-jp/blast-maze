@@ -7,7 +7,7 @@
     <title>Blast Maze</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
-    <link rel="stylesheet" href="styles.css?v=1.6.1">
+    <link rel="stylesheet" href="styles.css?v=1.7">
   </head>
   <body>
     <main class="game-shell">
@@ -20,7 +20,7 @@
           <label id="historyButton" class="history-button" for="historyToggle" role="button" tabindex="0">履歴</label>
           <label id="helpButton" class="history-button" for="helpToggle" role="button" tabindex="0">操作</label>
           <button id="soundButton" class="sound-toggle" type="button" aria-label="Sound on">♪</button>
-          <span class="version">v1.6.1</span>
+          <span class="version">v1.7</span>
         </div>
       </header>
 
@@ -41,6 +41,14 @@
           <span class="label">LIFE</span>
           <strong id="lives">3</strong>
         </div>
+        <div>
+          <span class="label">BOMB</span>
+          <strong id="bombs">1</strong>
+        </div>
+        <div>
+          <span class="label">FIRE</span>
+          <strong id="power">2</strong>
+        </div>
       </section>
 
       <section class="board-wrap" aria-label="Blast Maze game">
@@ -48,7 +56,15 @@
         <div id="overlay" class="overlay">
           <h1>Blast Maze</h1>
           <p>矢印/WASDで移動、Space/Enterで爆弾。出口を探して全ての敵を倒そう。</p>
-          <button id="startButton" type="button">Start</button>
+          <p id="passwordLine" class="password-line" hidden></p>
+          <div class="overlay-actions">
+            <button id="startButton" type="button">Start</button>
+            <div class="continue-box">
+              <input id="continueInput" type="text" inputmode="text" maxlength="5" autocomplete="off" placeholder="PASSWORD" aria-label="Continue password">
+              <button id="continueButton" type="button">Continue</button>
+            </div>
+            <p id="continueHint" class="continue-hint" aria-live="polite"></p>
+          </div>
         </div>
       </section>
 
@@ -69,6 +85,10 @@
             <label id="changelogClose" class="dialog-close" for="historyToggle" role="button" tabindex="0" aria-label="Close">×</label>
           </div>
           <ol>
+            <li>
+              <time datetime="2026-04-23">2026-04-23</time>
+              <span>v1.7: 被弾時の状態維持、パワー表示、パスワードコンティニューを追加。</span>
+            </li>
             <li>
               <time datetime="2026-04-22">2026-04-22</time>
               <span>v1.6.1: ゲームオーバー時の再挑戦ボタン表記を統一。</span>
@@ -144,11 +164,12 @@
             <li><strong>爆弾</strong><span>Space/Enter、またはスマホ右下の丸ボタン。</span></li>
             <li><strong>目的</strong><span>敵を全て倒し、ブロックに隠れた出口へ入ると次のステージ。</span></li>
             <li><strong>強化</strong><span>黄色いパワーアップを取ると爆風と同時設置数が増えます。</span></li>
+            <li><strong>続き</strong><span>ゲームオーバー時のパスワードをタイトル画面で入力すると、そのステージから再開できます。</span></li>
           </ul>
         </div>
       </section>
     </main>
 
-    <script src="game.js?v=1.6.1"></script>
+    <script src="game.js?v=1.7"></script>
   </body>
 </html>
