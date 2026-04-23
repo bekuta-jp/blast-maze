@@ -1,9 +1,9 @@
-const CACHE_NAME = "blast-maze-v1.7";
+const CACHE_NAME = "blast-maze-v1.8";
 const APP_ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=1.7",
-  "./game.js?v=1.7",
+  "./styles.css?v=1.8",
+  "./game.js?v=1.8",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png",

@@ -7,7 +7,7 @@
     <title>Blast Maze</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
-    <link rel="stylesheet" href="styles.css?v=1.7">
+    <link rel="stylesheet" href="styles.css?v=1.8">
   </head>
   <body>
     <main class="game-shell">
@@ -20,7 +20,7 @@
           <label id="historyButton" class="history-button" for="historyToggle" role="button" tabindex="0">履歴</label>
           <label id="helpButton" class="history-button" for="helpToggle" role="button" tabindex="0">操作</label>
           <button id="soundButton" class="sound-toggle" type="button" aria-label="Sound on">♪</button>
-          <span class="version">v1.7</span>
+          <span class="version">v1.8</span>
         </div>
       </header>
 
@@ -85,6 +85,10 @@
             <label id="changelogClose" class="dialog-close" for="historyToggle" role="button" tabindex="0" aria-label="Close">×</label>
           </div>
           <ol>
+            <li>
+              <time datetime="2026-04-23">2026-04-23</time>
+              <span>v1.8: ステージクリア時の強化維持、ESC中断、分離アイテム、爆風でのアイテム消失を追加。</span>
+            </li>
             <li>
               <time datetime="2026-04-23">2026-04-23</time>
               <span>v1.7: 被弾時の状態維持、パワー表示、パスワードコンティニューを追加。</span>
@@ -163,13 +167,13 @@
             <li><strong>移動</strong><span>キーボードは矢印キーまたはWASD。スマホは左下のD-pad。</span></li>
             <li><strong>爆弾</strong><span>Space/Enter、またはスマホ右下の丸ボタン。</span></li>
             <li><strong>目的</strong><span>敵を全て倒し、ブロックに隠れた出口へ入ると次のステージ。</span></li>
-            <li><strong>強化</strong><span>黄色いパワーアップを取ると爆風と同時設置数が増えます。</span></li>
+            <li><strong>強化</strong><span>黄色は爆弾数、赤は火力アップ。ESCで中断もできます。</span></li>
             <li><strong>続き</strong><span>ゲームオーバー時のパスワードをタイトル画面で入力すると、そのステージから再開できます。</span></li>
           </ul>
         </div>
       </section>
     </main>
 
-    <script src="game.js?v=1.7"></script>
+    <script src="game.js?v=1.8"></script>
   </body>
 </html>

@@ -34,7 +34,11 @@ const MAP = {
   wall: 1,
   crate: 2,
   exit: 3,
-  power: 4,
+  bombUp: 4,
+  fireUp: 5,
+  crateExit: 12,
+  crateBomb: 13,
+  crateFire: 14,
 };
 
 const keys = new Set();
@@ -45,7 +49,7 @@ let accumulator = 0;
 let audioContext;
 let soundEnabled = true;
 
-function makeState(stage = 1, score = 0, lives = 3) {
+function makeState(stage = 1, score = 0, lives = 3, playerStats = null) {
   const map = [];
   for (let y = 0; y < ROWS; y += 1) {
     const row = [];
@@ -72,9 +76,13 @@ function makeState(stage = 1, score = 0, lives = 3) {
 
   shuffle(hidden);
   if (hidden[0]) hidden[0].contains = MAP.exit;
-  if (hidden[1]) hidden[1].contains = MAP.power;
+  if (hidden[1]) hidden[1].contains = MAP.bombUp;
+  if (hidden[2]) hidden[2].contains = MAP.fireUp;
   hidden.forEach((item) => {
-    if (item.contains) map[item.y][item.x] = item.contains === MAP.exit ? MAP.crate + 10 : MAP.crate + 20;
+    if (!item.contains) return;
+    if (item.contains === MAP.exit) map[item.y][item.x] = MAP.crateExit;
+    else if (item.contains === MAP.bombUp) map[item.y][item.x] = MAP.crateBomb;
+    else if (item.contains === MAP.fireUp) map[item.y][item.x] = MAP.crateFire;
   });
 
   const enemies = [];
@@ -107,8 +115,8 @@ function makeState(stage = 1, score = 0, lives = 3) {
       moveCarryX: 0,
       moveCarryY: 0,
       nextWallSoundAt: 0,
-      bombs: 1,
-      power: 2,
+      bombs: playerStats?.bombs ?? 1,
+      power: playerStats?.power ?? 2,
       invincible: 1.4,
       alive: true,
     },
@@ -133,8 +141,12 @@ function startGame() {
 
 function nextStage() {
   playSound("stage");
-  state = makeState(state.stage + 1, state.score + 1000, state.lives);
+  state = makeState(state.stage + 1, state.score + 1000, state.lives, {
+    bombs: state.player.bombs,
+    power: state.player.power,
+  });
   state.status = "playing";
+  resetOverlay();
   overlay.classList.add("hidden");
   updateHud();
 }
@@ -160,6 +172,9 @@ function endGame(title, body, showPassword = false) {
   overlay.querySelector("h1").textContent = title;
   overlay.querySelector("p").textContent = body;
   startButton.textContent = "再挑戦";
+  continueInput.hidden = false;
+  continueButton.hidden = false;
+  continueHint.hidden = false;
   if (showPassword) {
     const password = passwordForStage(state.stage);
     passwordLine.hidden = false;
@@ -176,8 +191,32 @@ function resetOverlay() {
   startButton.textContent = "Start";
   passwordLine.hidden = true;
   passwordLine.textContent = "";
+  continueInput.hidden = false;
+  continueButton.hidden = false;
+  continueHint.hidden = false;
   continueInput.value = "";
   continueHint.textContent = "";
+}
+
+function pauseGame() {
+  if (!state || state.status !== "playing") return;
+  state.status = "paused";
+  overlay.querySelector("h1").textContent = "PAUSED";
+  overlay.querySelector("p").textContent = "再開でゲームに戻ります。";
+  startButton.textContent = "再開";
+  passwordLine.hidden = true;
+  continueInput.hidden = true;
+  continueButton.hidden = true;
+  continueHint.hidden = true;
+  overlay.classList.remove("hidden");
+}
+
+function resumeGame() {
+  if (!state || state.status !== "paused") return;
+  state.status = "playing";
+  resetOverlay();
+  overlay.classList.add("hidden");
+  lastFrame = performance.now();
 }
 
 function respawnPlayer() {
@@ -264,6 +303,8 @@ function updateBlasts(delta) {
   state.blasts = state.blasts.filter((blast) => blast.timer > 0);
 
   for (const blast of state.blasts) {
+    const tileValue = state.map[blast.y]?.[blast.x];
+    if (tileValue === MAP.bombUp || tileValue === MAP.fireUp) state.map[blast.y][blast.x] = MAP.empty;
     if (tileOf(state.player).x === blast.x && tileOf(state.player).y === blast.y) damagePlayer();
     for (const enemy of state.enemies) {
       if (enemy.alive && tileOf(enemy).x === blast.x && tileOf(enemy).y === blast.y) {
@@ -299,10 +340,15 @@ function updateEnemies(delta) {
 function checkPickupsAndExit() {
   const tile = tileOf(state.player);
   const value = state.map[tile.y]?.[tile.x];
-  if (value === MAP.power) {
+  if (value === MAP.bombUp) {
+    state.map[tile.y][tile.x] = MAP.empty;
+    state.player.bombs += 1;
+    state.score += 250;
+    playSound("power");
+  }
+  if (value === MAP.fireUp) {
     state.map[tile.y][tile.x] = MAP.empty;
     state.player.power += 1;
-    state.player.bombs += 1;
     state.score += 250;
     playSound("power");
   }
@@ -369,8 +415,9 @@ function explodeBomb(bomb) {
 }
 
 function revealCrate(x, y, value) {
-  if (value === MAP.crate + 10) state.map[y][x] = MAP.exit;
-  else if (value === MAP.crate + 20) state.map[y][x] = MAP.power;
+  if (value === MAP.crateExit) state.map[y][x] = MAP.exit;
+  else if (value === MAP.crateBomb) state.map[y][x] = MAP.bombUp;
+  else if (value === MAP.crateFire) state.map[y][x] = MAP.fireUp;
   else state.map[y][x] = MAP.empty;
 }
 
@@ -502,14 +549,28 @@ function drawExitAndPower() {
         ctx.fillStyle = "#17231e";
         ctx.fillRect(cx - 7, cy - 2, 5, 5);
       }
-      if (value === MAP.power) {
+      if (value === MAP.bombUp) {
         ctx.fillStyle = "#f2c14e";
         ctx.beginPath();
         ctx.arc(cx, cy, 17, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = "#4b310a";
-        ctx.fillRect(cx - 4, cy - 12, 8, 24);
         ctx.fillRect(cx - 12, cy - 4, 24, 8);
+        ctx.fillRect(cx - 4, cy - 12, 8, 24);
+      }
+      if (value === MAP.fireUp) {
+        ctx.fillStyle = "#ff7a45";
+        ctx.beginPath();
+        ctx.arc(cx, cy, 17, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#5c1d0a";
+        ctx.fillRect(cx - 4, cy - 12, 8, 24);
+        ctx.beginPath();
+        ctx.moveTo(cx - 11, cy + 6);
+        ctx.lineTo(cx, cy - 13);
+        ctx.lineTo(cx + 11, cy + 6);
+        ctx.closePath();
+        ctx.fill();
       }
     }
   }
@@ -604,7 +665,7 @@ function openTiles(map) {
 }
 
 function isCrate(value) {
-  return value === MAP.crate || value === MAP.crate + 10 || value === MAP.crate + 20;
+  return value === MAP.crate || value === MAP.crateExit || value === MAP.crateBomb || value === MAP.crateFire;
 }
 
 function isSolid(value) {
@@ -768,8 +829,17 @@ function clearLegacyModalHash() {
 
 window.addEventListener("keydown", (event) => {
   const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
-  if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " ", "Enter"].includes(event.key)) {
+  if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " ", "Enter", "Escape"].includes(event.key)) {
     event.preventDefault();
+  }
+  if (event.key === "Escape") {
+    if (state?.status === "playing") {
+      pauseGame();
+      return;
+    }
+    closeModal(changelogDialog);
+    closeModal(helpDialog);
+    return;
   }
   keys.add(key);
   if (event.key === " " || event.key === "Enter") placeBomb();
@@ -863,11 +933,16 @@ helpDialog.addEventListener("click", (event) => {
 
 window.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
-  closeModal(changelogDialog);
-  closeModal(helpDialog);
+  if (state?.status !== "playing") {
+    closeModal(changelogDialog);
+    closeModal(helpDialog);
+  }
 });
 
-startButton.addEventListener("click", startGame);
+startButton.addEventListener("click", () => {
+  if (state?.status === "paused") resumeGame();
+  else startGame();
+});
 continueButton.addEventListener("click", continueFromPassword);
 continueInput.addEventListener("input", () => {
   continueInput.value = continueInput.value.toUpperCase();
